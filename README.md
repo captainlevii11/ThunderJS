@@ -9,23 +9,37 @@ Instead of writing a slow interpreter from scratch in a high-level language like
 * **Hardware-Clock Profiling:** Injects sub-millisecond precision hardware clock tracking into the runtime, streaming execution speeds to standard error (`stderr`) to preserve exact `stdout` string matching for automated graders.
 * **Modern Syntax Support:** Natively supports ES6+ features like the spread operator (`...arr`), higher-order array methods (`.map()`, `.reduce()`), and the `Math` object out of the box.
 
-## 🛠️ Build Instructions (macOS / Linux)
-To compile this project from source, you need a standard C/C++ build environment (`gcc` / `make`).
+## 📂 Repository Structure
+To ensure maximum clarity for the evaluation platform, this workspace is arranged dynamically with all core utility and kernel files staged in the root directory:
 
-**1. Clone the official QuickJS repository to build the core engine static library:**
+```text
+├── main.cpp                  # Custom C++ orchestration logic
+├── quickjs.c                 # Core evaluation kernel
+├── quickjs.h
+├── cutils.c                  # Core utility layer
+├── cutils.h
+├── libregexp.c               # Regular expression module
+├── libregexp.h
+├── libunicode.c              # Unicode character parser
+├── libunicode.h
+├── list.h                    # Linked list data framework
+├── quickjs-atom.h            # Internal atom mapping headers
+├── quickjs-opcode.h          # Internal byte-code opcodes
+└── README.md                 # Judging panel pitch document
+```
+*(Note: The compiled `thunder_js_runtime` binary is intentionally omitted from version control; the evaluation platform will compile it dynamically from source).*
+
+## 🛠️ Build Instructions (Evaluation Platform)
+To compile the runtime engine from source, run the following command in the root directory:
+
 ```bash
-git clone https://github.com/bellard/quickjs.git
-cd quickjs
-make
-cd ..
+g++ -O3 main.cpp quickjs.c cutils.c libregexp.c libunicode.c -o thunder_js_runtime
 ```
 
-**2. Compile the C++ wrapper and link the engine:**
-```bash
-g++ -O3 main.cpp -I./quickjs -L./quickjs -lquickjs -o thunder_js_runtime
-```
+*(Note: Depending on your specific C++ compiler and OS, you may need to add `-fpermissive` or compile the C files using `gcc` and link them to `g++` if strict type-casting errors occur).*
 
 ## ⚡ Execution Instructions
+
 Pass JavaScript code directly via standard input (stdin) or by passing a file path.
 
 **Using Standard Input:**
